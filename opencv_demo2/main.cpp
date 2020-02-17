@@ -39,11 +39,11 @@ int main(int argc, char** argv)
 	//cv::VideoCapture cap("D:/VS2017_projects/opencv/demo1/test_data/Video/car1_25fps.mp4");
 	cv::VideoCapture cap(0);
 	cv::Mat img;
+	Point2f Armor_center;
 	while (1)
 	{
 		cap >> img;
 
-		Point2f Armor_center;
 		Armor_center = Armor_Dection(img, RED);
 		std::cout << "The Best Armor Center:" << Armor_center << std::endl;
 		cv::imshow("สำฦต", img);
