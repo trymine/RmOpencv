@@ -2,8 +2,7 @@
 #include<opencv.hpp>
 #include<iostream>
 #include"Armor_Dection.h"
-//using namespace cv;
-//using namespace std;
+
 
 cv::Mat channel_swap(cv::Mat img) {
 	// get height and width
@@ -30,52 +29,29 @@ cv::Mat channel_swap(cv::Mat img) {
 
 int main(int argc, char** argv)
 {
-	/*cout << "test";
-	Mat p;
-	VideoCapture cap(0);
-	
-	while (1)
-	{
-		
-		cap >> p;
-		imshow("camera", p);
-
-		if (waitKey(10) == 27)
-			break;
-	}*/
-	cv::Mat img = cv::imread("4.tif");
-	resize(img, img, Size(img.cols / 4, img.rows / 4));
+	//cv::Mat img = cv::imread("4.tif");
+	//resize(img, img, Size(img.cols / 4, img.rows / 4));//尺寸缩减（后期可在相机上直接调节采样大小及图像分辨率）
 	//cv::Mat out = channel_swap(img);//转化为BGR通道
 	//cv::Mat dst;
 	//resize(img, dst, Size(), 0.25, 0.25);//我长宽都变为原来的0.6倍
 	//resize(img, img, Size(img.cols / 4, img.rows / 4));
+
+	//cv::VideoCapture cap("D:/VS2017_projects/opencv/demo1/test_data/Video/car1_25fps.mp4");
+	cv::VideoCapture cap(0);
+	cv::Mat img;
 	while (1)
 	{
-		Armor_Dection(img, 0);
+		cap >> img;
+
+		Point2f Armor_center;
+		Armor_center = Armor_Dection(img, RED);
+		std::cout << "The Best Armor Center:" << Armor_center << std::endl;
+		cv::imshow("视频", img);
+		waitKey(1);
 		//getchar();
 	}
-	waitKey(0);
+
 	return 0;
-	//Mat src;
-	//src = imread("D:\\VS2017_projects\\opencv\\demo1\\4\\4\\4.tif");
-
-	///*if (src.empty()) {
-	//	cout << "could not load image..." << endl;
-	//	return -1;
-	//}*/
-
-	//resize(src, src, Size(src.cols / 4, src.rows / 4));  //尺寸缩减（后期可在相机上直接调节采样大小及图像分辨率）
-
-
-
-	//double t = (double)getTickCount();
-
-	//Point2f Armor_center;
-	//Armor_center = Armor_Dection(src, BLUE);
-	//cout << "The Best Armor Center:" << Armor_center << endl;
-
-	//waitKey(0);
-	//return 0;
 }
 
 
