@@ -21,9 +21,18 @@
     <ClCompile Include="Armor_Dection.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Armor_Detection2.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Armor_Dection.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Armor_Detection2.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="opencv_extended2.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

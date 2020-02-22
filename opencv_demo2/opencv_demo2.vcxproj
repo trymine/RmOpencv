@@ -123,10 +123,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Armor_Dection.cpp" />
+    <ClCompile Include="Armor_Detection2.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Armor_Dection.h" />
+    <ClInclude Include="Armor_Detection2.h" />
+    <ClInclude Include="opencv_extended2.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

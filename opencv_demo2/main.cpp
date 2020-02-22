@@ -1,9 +1,10 @@
 //*
 #include<opencv.hpp>
 #include<iostream>
-#include"Armor_Dection.h"
+//#include"Armor_Dection.h"
+#include"Armor_Detection2.h"
 
-
+/*
 cv::Mat channel_swap(cv::Mat img) {
 	// get height and width
 	int width = img.cols;
@@ -26,7 +27,8 @@ cv::Mat channel_swap(cv::Mat img) {
 
 	return out;
 }
-
+*/
+/*
 int main(int argc, char** argv)
 {
 	//cv::Mat img = cv::imread("4.tif");
@@ -52,9 +54,77 @@ int main(int argc, char** argv)
 	}
 
 	return 0;
+}*/
+/*进行detection2测试*/
+using namespace Robomaster;
+
+int main(int argc, char** argv)
+{
+
+	Mat src;
+	char filename[100];
+	int i = 1;
+	int flag = 1;
+
+
+	do
+	{
+		//时间消耗测试
+		double t, tc;
+		t = getTickCount();
+
+		//读取图像
+		sprintf_s(filename, "D:/VS2017_projects/opencv/demo1/test_data/Armor_Dection/%d.tif", i);
+		src = imread(filename);
+		cout << filename << endl;
+		if (src.empty()) {
+			cout << "can not load image" << endl;
+			break;
+		}
+		resize(src, src, Size(src.cols / 4, src.rows / 4));
+
+
+		//识别函数载入
+		ArmorDetector detector;
+		detector.setEnemyColor(BLUE);
+		detector.loadImg(src);
+		detector.detect();
+
+
+		//时间消耗测试
+		tc = (getTickCount() - t) / getTickFrequency();
+		printf("1234time consume %.5f\n", tc);    //显示出耗费时间的多少
+
+
+		//如果需要调用ArmorDetector里面的所有馆目标装甲板的对象，参见下述例程
+		if (detector._flag)
+		{
+			cout << "目标装甲板中心：" << detector._targetArmor.center << endl;
+			circle(src, detector._targetArmor.center, 2, Scalar(0, 255, 0), 2);
+
+		}
+		else
+		{
+			cout << "Not Found!" << endl;
+		}
+
+
+		//调试用
+		detector.draw_All_Armor(src); //画出所有识别到的真装甲板
+		detector.drawArmor_Points(src);//画出目标装甲板
+
+		imshow("src", src);  //实时显示图像（及画出的装甲板）
+		imshow("srcImage", detector._srcImg);
+
+
+		if (waitKey(0) == 'w') { i++; continue; }
+		if (waitKey(0) == 's') { i--; continue; }
+		if (waitKey(0) == 27) break;
+
+	} while (flag);
+	system("pause");
+	return 0;
 }
-
-
 
 /*/
 
