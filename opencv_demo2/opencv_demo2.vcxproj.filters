@@ -13,27 +13,33 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="头文件\AromorDetection">
+      <UniqueIdentifier>{2401bd7d-44d7-4ffe-9e0a-d7a139c416d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\ArmorDetection">
+      <UniqueIdentifier>{c4ce4ceb-5ccf-414d-b1e3-0e310819c2cf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Armor_Dection.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="Src\Armor_Dection.cpp">
+      <Filter>源文件\ArmorDetection</Filter>
     </ClCompile>
-    <ClCompile Include="Armor_Detection2.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="Src\Armor_Detection2.cpp">
+      <Filter>源文件\ArmorDetection</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Armor_Dection.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="Inc\Armor_Dection.h">
+      <Filter>头文件\AromorDetection</Filter>
     </ClInclude>
-    <ClInclude Include="Armor_Detection2.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="Inc\Armor_Detection2.h">
+      <Filter>头文件\AromorDetection</Filter>
     </ClInclude>
-    <ClInclude Include="opencv_extended2.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="Inc\opencv_extended2.h">
+      <Filter>头文件\AromorDetection</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

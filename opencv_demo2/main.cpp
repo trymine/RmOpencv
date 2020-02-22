@@ -74,7 +74,7 @@ int main(int argc, char** argv)
 		t = getTickCount();
 
 		//¶ÁÈ¡Í¼Ïñ
-		sprintf_s(filename, "D:/VS2017_projects/opencv/demo1/test_data/Armor_Dection/%d.tif", i);
+		sprintf_s(filename, "D:/VS2017_projects/opencv/demo1/opencv_demo2/TestData/Picture/%d.tif", i);
 		src = imread(filename);
 		cout << filename << endl;
 		if (src.empty()) {

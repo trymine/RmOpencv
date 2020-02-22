@@ -88,6 +88,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>D:\VS2017_projects\opencv\demo1\opencv_demo2\opencv_demo2\Inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>opencv_world347d.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -115,6 +116,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>D:\VS2017_projects\opencv\demo1\opencv_demo2\opencv_demo2\Inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -122,14 +124,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Armor_Dection.cpp" />
-    <ClCompile Include="Armor_Detection2.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Src\Armor_Dection.cpp" />
+    <ClCompile Include="Src\Armor_Detection2.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Armor_Dection.h" />
-    <ClInclude Include="Armor_Detection2.h" />
-    <ClInclude Include="opencv_extended2.h" />
+    <ClInclude Include="Inc\Armor_Dection.h" />
+    <ClInclude Include="Inc\Armor_Detection2.h" />
+    <ClInclude Include="Inc\opencv_extended2.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
