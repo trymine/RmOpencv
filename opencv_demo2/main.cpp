@@ -1,63 +1,35 @@
-//*
+
 #include<opencv.hpp>
 #include<iostream>
 //#include"Armor_Dection.h"
 #include"Armor_Detection2.h"
+#include "CreatThread.h"
+#include <thread>
+//框架多线程
 
-/*
-cv::Mat channel_swap(cv::Mat img) {
-	// get height and width
-	int width = img.cols;
-	int height = img.rows;
-
-	// prepare output
-	cv::Mat out = cv::Mat::zeros(height, width, CV_8UC3);
-
-	// each y, x
-	for (int y = 0; y < height; y++) {
-		for (int x = 0; x < width; x++) {
-			// R -> B
-			out.at<cv::Vec3b>(y, x)[0] = img.at<cv::Vec3b>(y, x)[2];
-			// B -> R
-			out.at<cv::Vec3b>(y, x)[2] = img.at<cv::Vec3b>(y, x)[0];
-			// G -> G
-			out.at<cv::Vec3b>(y, x)[1] = img.at<cv::Vec3b>(y, x)[1];
-		}
-	}
-
-	return out;
-}
-*/
-/*
-int main(int argc, char** argv)
-{
-	//cv::Mat img = cv::imread("4.tif");
-	//resize(img, img, Size(img.cols / 4, img.rows / 4));//尺寸缩减（后期可在相机上直接调节采样大小及图像分辨率）
-	//cv::Mat out = channel_swap(img);//转化为BGR通道
-	//cv::Mat dst;
-	//resize(img, dst, Size(), 0.25, 0.25);//我长宽都变为原来的0.6倍
-	//resize(img, img, Size(img.cols / 4, img.rows / 4));
-
-	//cv::VideoCapture cap("D:/VS2017_projects/opencv/demo1/test_data/Video/car1_25fps.mp4");
-	cv::VideoCapture cap(0);
-	cv::Mat img;
-	Point2f Armor_center;
-	while (1)
-	{
-		cap >> img;
-
-		Armor_center = Armor_Dection(img, RED);
-		std::cout << "The Best Armor Center:" << Armor_center << std::endl;
-		cv::imshow("视频", img);
-		waitKey(1);
-		//getchar();
-	}
-
-	return 0;
-}*/
 /*进行detection2测试*/
-using namespace Robomaster;
+//using namespace Robomaster;
+/*使用RM*/
+using namespace RM;
+int main()
+{
+	ProcessClass Process;
+	Process.Init();
 
+	std::thread ImageAcquireThread(&ProcessClass::ImageAcquire,&Process);
+	std::thread ImageProcessThread(&ProcessClass::ImageProcess,&Process);
+	//std::thread ImageTrackThread(&Process.ImageTrack);
+	//std::thread CommunicateThread(&Process.Communicate);
+
+	ImageAcquireThread.join();
+	ImageProcessThread.join();
+	//ImageTrackThread.join();
+	//CommunicateThread.join();
+	system("pause");
+	return 0;
+}
+
+/*
 int main(int argc, char** argv)
 {
 
@@ -65,10 +37,12 @@ int main(int argc, char** argv)
 	char filename[100];
 	int i = 1;
 	int flag = 1;
-
+	//cv::VideoCapture cap("D:/VS2017_projects/opencv/demo1/test_data/Video/car1_25fps.mp4");
+	//cv::VideoCapture cap(0);
 
 	do
 	{
+		//cap >> img;
 		//时间消耗测试
 		double t, tc;
 		t = getTickCount();
@@ -117,14 +91,17 @@ int main(int argc, char** argv)
 		imshow("srcImage", detector._srcImg);
 
 
-		if (waitKey(0) == 'w') { i++; continue; }
-		if (waitKey(0) == 's') { i--; continue; }
-		if (waitKey(0) == 27) break;
+		if (waitKey(0) == 'w')  i++; 
+		else if (waitKey(0) == 's')  i--; 
+		else if (waitKey(0) == 27) break;
 
 	} while (flag);
 	system("pause");
 	return 0;
 }
+*/
+
+
 
 /*/
 
@@ -181,8 +158,6 @@ int main(int argc, const char* argv[]){
   return 0;
 }
 */
-
-
 
 /*
 //quenction 05

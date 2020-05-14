@@ -127,10 +127,12 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Src\Armor_Dection.cpp" />
     <ClCompile Include="Src\Armor_Detection2.cpp" />
+    <ClCompile Include="Src\CreatThread.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Inc\Armor_Dection.h" />
     <ClInclude Include="Inc\Armor_Detection2.h" />
+    <ClInclude Include="Inc\CreatThread.h" />
     <ClInclude Include="Inc\opencv_extended2.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

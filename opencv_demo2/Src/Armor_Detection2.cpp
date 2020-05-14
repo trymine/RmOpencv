@@ -93,6 +93,138 @@ namespace Robomaster
 
 
 	/*
+	*	@Brief: Detect Led
+	*	@Outputs: ALL the info of detection result
+	*	@
+	*	@Calls: The Consumer
+	*/
+	int ArmorDetector::DetectLight()
+	{
+
+		/*build light bars' desciptors*/
+		std::vector<LightDescriptor> lightInfos;
+		/*build light bars' desciptors*/
+
+		/*
+		*	pre-treatment
+		*/
+
+		// 通道相减分割颜色
+		std::vector<cv::Mat> channels;
+		cv::Mat image;
+		split(_srcImg, channels);// 把一个3通道图像转换成3个单通道图像
+
+		int c1, c2;
+
+		if (_enemy_color == BLUE)
+		{
+			c1 = 0;
+			c2 = 2;
+		}
+		if (_enemy_color == RED)
+		{
+			c1 = 2;
+			c2 = 0;
+		}
+
+		/*
+		*	颜色通道相减过滤颜色,删除己方装甲板颜色,得到灰度图
+		*/
+		subtract(channels[c1], channels[c2], image);
+		//imshow("颜色分离", image);
+		/*
+		*	二值化，100为鲁棒性最佳
+		*/
+		cv::threshold(image, image, _param.color_Threshold, 255, cv::THRESH_BINARY);
+		//imshow("二值化", image);
+		/*
+		*	膨胀，防止灯条形状异变
+		*		1产生结构化（特定大小形状）元素，用于形态学处理
+		*		2膨胀
+		*/
+		Mat kernel = getStructuringElement(MORPH_ELLIPSE, Size(3, 3));
+		//imshow("BeforeBin", image);
+		dilate(image, image, kernel);
+
+		//imshow("膨胀处理", image);
+
+		/*
+		*	寻找轮廓
+		*/
+
+		vector<vector<Point>> lightContours;
+		//最耗时，只检测外部轮廓，且仅保留轮廓拐点信息进输出向量里
+		cv::findContours(image, lightContours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
+
+		/*
+		*	找到轮廓后开始遍历轮廓提取灯条
+		*/
+		for (const auto& contour : lightContours)
+		{
+			//得到面积
+			float lightContourArea = contourArea(contour);
+			//minAreaRect();
+			//面积太小的不要
+			if (contour.size() <= 5 ||
+				lightContourArea < _param.light_min_area)
+				continue;
+			//用椭圆拟合区域得到外接矩形
+			RotatedRect lightRec = fitEllipse(contour);
+
+			//旋转角度范围为[-90,0)，逆时针旋转碰到的第一个边称为宽，逆时针旋转方向为负
+			//Adjust the RotatedRect lightRec angle
+			if (lightRec.angle > 135)
+				lightRec.angle -= 180.0;
+
+			//filter light according to the angle
+			if (abs(lightRec.angle) > 45)
+				continue;
+
+
+			//绘制外接椭圆（影响性能）
+			//cv::ellipse(_srcImg, lightRec, cv::Scalar(0, 255, 255), 2, 8);
+			//绘制外接矩形（影响性能）
+			//drawTargetLight_Points(lightRec);
+
+
+			lightInfos.emplace_back(lightRec);
+
+		}
+
+		if (lightInfos.empty())
+			return _flag = ARMOR_NO;
+
+		/*存在灯条*/
+		_targetLight=lightInfos[0];
+		/*存在灯条*/
+
+		return _flag = ARMOR_FOUND;
+
+	}
+
+	//draw the led
+	void ArmorDetector::drawTargetLight_Points(RotatedRect &rotate_rect)
+	{
+		
+			//for (int i = 0; i < 4; i++) {
+			//	//line(src, _targetLight.vertex[i], _targetLight.vertex[(i + 1) % 4], Scalar(0, 0, 255), 1, LINE_AA);
+			//	circle(src, _targetLight.center, 2, Scalar(0, 0, 255), 2);
+			//}
+				//获取旋转矩形的四个顶点
+			cv::Point2f* vertices = new cv::Point2f[4];
+			rotate_rect.points(vertices);
+
+			//逐条边绘制
+			for (int j = 0; j < 4; j++)
+			{
+				cv::line(_srcImg, vertices[j], vertices[(j + 1) % 4], cv::Scalar(0, 255, 0));
+			}
+
+	}
+
+
+
+	/*
 	*	@Brief: core of detection algrithm, include all the main detection process
 	*	@Outputs: ALL the info of detection result
 	*	@Return: See enum DetectorFlag
@@ -119,7 +251,7 @@ namespace Robomaster
 
 		std::vector<cv::Mat> channels;
 		cv::Mat image;
-		split(_srcImg, channels);
+		split(_srcImg, channels);// 把一个3通道图像转换成3个单通道图像
 
 		int c1, c2;
 
@@ -135,40 +267,47 @@ namespace Robomaster
 		}
 
 		/*
-		*	颜色通道相减过滤颜色
+		*	颜色通道相减过滤颜色,删除己方装甲板颜色,得到灰度图
 		*/
 		subtract(channels[c1], channels[c2], image);
-
+		//imshow("subtract", image);
 		/*
 		*	二值化，100为鲁棒性最佳
 		*/
 		cv::threshold(image, image, _param.color_Threshold, 255, cv::THRESH_BINARY);
-
+		//imshow("afterthreshold", image);
 		/*
-		*	单词降噪膨胀，防止灯条形状异变
+		*	膨胀，防止灯条形状异变
+		*		1产生结构化（特定大小形状）元素，用于形态学处理
+		*		2膨胀
 		*/
 		Mat kernel = getStructuringElement(MORPH_ELLIPSE, Size(3, 3));
+		//imshow("BeforeBin", image);
 		dilate(image, image, kernel);
-
-		imshow("BinImage", image);
+		
+		//imshow("BinImage", image);
 
 		/*
-		*	find and filter light bars
+		*	寻找轮廓
 		*/
 
 		vector<vector<Point>> lightContours;
-
+		//最耗时
 		cv::findContours(image, lightContours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
 
-
+		/*
+		*	找到轮廓后开始遍历轮廓提取灯条
+		*/
 		for (const auto& contour : lightContours)
 		{
+			//得到面积
 			float lightContourArea = contourArea(contour);
-
+			//minAreaRect();
+			//面积太小的不要
 			if (contour.size() <= 5 ||
 				lightContourArea < _param.light_min_area)
 				continue;
-
+			//用椭圆拟合区域得到外接矩形
 			RotatedRect lightRec = fitEllipse(contour);
 
 
@@ -190,10 +329,10 @@ namespace Robomaster
 
 
 		/*
-		*	find and filter light bar pairs
+		*	进行灯条的匹配筛选
 		*/
 
-		//升序排列灯条 将灯条从左到右排列
+		//升序排列灯条 将灯条从左到右排列（按灯条中心x从小到大排序）
 		sort(lightInfos.begin(), lightInfos.end(), [](const LightDescriptor& ld1, const LightDescriptor& ld2)
 		{
 			return ld1.center.x < ld2.center.x;
@@ -215,8 +354,9 @@ namespace Robomaster
 				*	morphologically similar: //lighhts are parallel
 									// both similar height
 				*/
-
+				//角差
 				float angleDiff_ = abs(leftLight.angle - rightLight.angle);
+				//长度差比率
 				float LenDiff_ratio = abs(leftLight.length - rightLight.length) / max(leftLight.length, rightLight.length);
 
 				if (angleDiff_ > _param.light_max_angle_diff ||
@@ -231,16 +371,17 @@ namespace Robomaster
 				*	proper location:  // y value of light bar close enough
 				*					 // ratio of length and width is proper
 				*/
+				//左右灯条长度的平均值
 				float meanLen = (leftLight.length + rightLight.length) / 2;
-
+				//左右灯条中心点y的差值和差比率
 				float yDiff = abs(leftLight.center.y - rightLight.center.y);
 				float yDiff_ratio = yDiff / meanLen;
-
+				//左右灯条中心点x的差值和差比率
 				float xDiff = abs(leftLight.center.x - rightLight.center.x);
 				float xDiff_ratio = xDiff / meanLen;
 
 				if (yDiff_ratio > _param.light_max_y_diff_ratio ||
-					xDiff_ratio > _param.light_max_x_diff_ratio)
+					xDiff_ratio > _param.light_max_x_diff_ratio)//或者xDiff_ratio < _param.light_min_x_diff_ratio_
 					continue;
 
 
@@ -309,8 +450,6 @@ namespace Robomaster
 		_targetArmor = _True_armors[0];
 		return _flag = ARMOR_FOUND;
 	};
-
-
 
 
 

@@ -194,7 +194,12 @@ namespace Robomaster
 		*	@Return: See enum DetectorFlag
 		*	@Others: API for client
 		*/
+		int DetectLight();
+
 		int detect();
+
+		//draw the led
+		void drawTargetLight_Points(RotatedRect &rotate_rect);
 
 		//draw the target armor
 		void drawArmor_Points(Mat src);
@@ -205,16 +210,23 @@ namespace Robomaster
 
 	public:
 
-		cv::Mat _srcImg; //source img
+		cv::Mat _srcImg; //source img 工作区
 
 		int _enemy_color;
 
+		/*装甲板识别*/
 		std::vector<ArmorDescriptor> _armors;
 		std::vector<ArmorDescriptor> _True_armors;
 		ArmorDescriptor _targetArmor; //relative coordinates
+		/*装甲板识别*/
 
+		/*是否识别到标志-灯条检测和装甲板检测公用*/
 		int _flag = ARMOR_NO;
+		/*是否识别到标志-灯条检测和装甲板检测公用*/
 
+		/*灯条识别-仅考虑一个的情况*/
+		LightDescriptor _targetLight;
+		/*灯条识别-仅考虑一个的情况*/
 	};
 
 
